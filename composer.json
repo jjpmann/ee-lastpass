@@ -19,5 +19,10 @@
     },
     "extra": {
         "installer-name": "lastpass"
+    },
+    "autoload": {
+        "psr-4": {
+            "EE\\LastPass\\": "src/"
+        }
     }
 }
