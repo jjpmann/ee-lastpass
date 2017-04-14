@@ -71,6 +71,7 @@ class Lastpass_upd {
         ee()->dbforge->add_field($config_fields);
         ee()->dbforge->add_key('lastpass_config_id', TRUE);
         ee()->dbforge->create_table('lastpass_config');
+        
 
         return TRUE;
     }
@@ -96,6 +97,9 @@ class Lastpass_upd {
         
         ee()->db->where('class', $this->module_name.'_mcp');
         ee()->db->delete('actions');
+
+        ee()->load->dbforge();
+        ee()->dbforge->drop_table('lastpass_config');
 
         return TRUE;
     }
