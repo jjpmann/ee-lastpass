@@ -1,7 +1,5 @@
 <?php
 
-require_once dirname(__FILE__) . '/xmlseclibs.php';
-
 function lp_saml_auth($settings, $resp)
 {
     $saml_cert = trim($settings['cert']);

@@ -23,6 +23,10 @@
     "autoload": {
         "psr-4": {
             "EE\\LastPass\\": "src/"
-        }
+        },
+        "files": [
+            "lib/lastpass_lib.php",
+            "lib/xmlseclibs.php"
+        ]
     }
 }

@@ -28,9 +28,6 @@ class Extension
     public function __construct($settings = '')
     {
         $this->settings = $settings;
-
-        require_once PATH_THIRD.'lastpass/lib/lastpass_lib.php';
-        
     }
 
     public static function isLoaded()
