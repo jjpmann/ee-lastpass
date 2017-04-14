@@ -1,5 +1,7 @@
 <?php
 
+namespace EE\LastPass;
+
 /**
  * LastPass Extension.
  *
