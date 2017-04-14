@@ -1,3 +1,5 @@
 <?php  if ( ! defined('BASEPATH')) exit('No direct script access allowed');
 
-class Lastpass_ext extends EE\LastPass\LastPassExtension {}
+//require_once 'src/LastPassExtension.php';
+
+class Lastpass_ext extends EE\LastPass\Extension {}

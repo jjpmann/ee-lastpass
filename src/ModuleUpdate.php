@@ -2,6 +2,8 @@
 
 namespace EE\LastPass;
 
+use EE\Addons\Module\BaseModuleUpdate;
+
 /**
  * LastPass Extension.
  *
@@ -10,7 +12,7 @@ namespace EE\LastPass;
  * @link        https://github.com/jjpmann
  */
 
-class LastPassModuleUpdate extends EE\Addons\Module\BaseModuleUpdate {
+class ModuleUpdate extends BaseModuleUpdate {
         
     protected $version        = LP_VERSION;
     protected $module_name    = LP_SHORT_NAME;
