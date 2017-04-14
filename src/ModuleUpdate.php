@@ -12,7 +12,8 @@ use EE\Addons\Module\BaseModuleUpdate;
  * @link        https://github.com/jjpmann
  */
 
-class ModuleUpdate extends BaseModuleUpdate {
+class ModuleUpdate extends BaseModuleUpdate 
+{
         
     public $version        = LP_VERSION;
     public $module_name    = LP_SHORT_NAME;

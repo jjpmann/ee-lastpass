@@ -10,8 +10,9 @@ namespace EE\LastPass;
  * @link        https://github.com/jjpmann
  */
 
-class Extension
+class Extension 
 {
+
     public $settings = array();
     public $description = LP_DESCRIPTION;
     public $docs_url = '';
