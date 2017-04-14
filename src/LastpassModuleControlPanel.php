@@ -10,7 +10,7 @@ namespace EE\LastPass;
  * @link        https://github.com/jjpmann
  */
 
-class LastpassModuleControlPanel extends EE\Addons\Module\BaseModuleControlPanel {
+class LastPassModuleControlPanel extends EE\Addons\Module\BaseModuleControlPanel {
 {
     protected $base = 'addons/settings/lastpass';          // the base url for this module         
     protected $form_base;     // base url for forms
