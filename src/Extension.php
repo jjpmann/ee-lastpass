@@ -2,6 +2,8 @@
 
 namespace EE\LastPass;
 
+use EE\Addons\Extension\BaseExtension;
+
 /**
  * LastPass Extension.
  *
@@ -10,7 +12,7 @@ namespace EE\LastPass;
  * @link        https://github.com/jjpmann
  */
 
-class Extension 
+class Extension extends BaseExtension
 {
 
     public $settings = array();
@@ -29,19 +31,7 @@ class Extension
     public function __construct($settings = '')
     {
         $this->settings = $settings;
-    }
-
-    public static function isLoaded()
-    {
-        $qry = ee()->db
-                ->from('extensions')
-                ->where(array('class' => __CLASS__, 'enabled' => 'y'))
-                ->get();
-
-        if ($qry->num_rows() > 0) {
-            return true;
-        }
-        return false;
+        $this->isLoaded();
     }
 
     /**
