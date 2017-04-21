@@ -23,7 +23,7 @@ class Extension extends BaseExtension
     public $version = LP_VERSION;
 
     protected $hooks = [
-        'core_boot'
+        'core_boot' => 'core_boot_hook'
     ];
     
     /**
