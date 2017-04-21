@@ -22,17 +22,19 @@ class Extension extends BaseExtension
     public $settings_exist = 'n';
     public $version = LP_VERSION;
 
+    protected $hooks = [
+        'core_boot'
+    ];
     
     /**
      * Constructor.
      *
      * @param   mixed   Settings array or empty string if none exist.
      */
-    public function __construct($settings = '')
-    {
-        $this->settings = $settings;
-        $this->isLoaded();
-    }
+    // public function __construct($settings = '')
+    // {
+    //     $this->settings = $settings;
+    // }
 
     /**
      * Settings Form.
@@ -68,8 +70,10 @@ class Extension extends BaseExtension
     /**
      *  Kick off login process using friendly URL
      */
-    public function core_boot_hook()
+    public function init()
     {        
+        echo "<pre>".__FILE__.'<br>'.__METHOD__.' : '.__LINE__."<br><br>"; var_dump( 'init' ); exit;
+        
         if (ee()->uri->uri_string == 'lastpass_login') {
             $this->processLogin();
         }
@@ -147,62 +151,4 @@ class Extension extends BaseExtension
         
     }
 
-
-
-    /**
-     * Activate Extension.
-     *
-     * This function enters the extension into the exp_extensions table
-     *
-     * @see http://codeigniter.com/user_guide/database/index.html for
-     * more information on the db class.
-     */
-    public function activate_extension()
-    {
-        // Setup custom settings in this array.
-        $this->settings = array();
-
-        $hooks = array(
-            'core_boot'         => 'core_boot_hook',
-        );
-
-        foreach ($hooks as $hook => $method) {
-            $data = array(
-                'class' => __CLASS__,
-                'method' => $method,
-                'hook' => $hook,
-                'settings' => serialize($this->settings),
-                'version' => $this->version,
-                'enabled' => 'y',
-            );
-
-            ee()->db->insert('extensions', $data);
-        }
-    }
-
-    /**
-     * Disable Extension.
-     *
-     * This method removes information from the exp_extensions table
-     */
-    public function disable_extension()
-    {
-        ee()->db->where('class', __CLASS__);
-        ee()->db->delete('extensions');
-    }
-
-    /**
-     * Update Extension.
-     *
-     * This function performs any necessary db updates when the extension
-     * page is visited
-     *
-     * @return mixed void on update / false if none
-     */
-    public function update_extension($current = '')
-    {
-        if ($current == '' or $current == $this->version) {
-            return false;
-        }
-    }
 }
