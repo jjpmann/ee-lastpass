@@ -23,7 +23,7 @@ class Extension extends BaseExtension
     public $version = LP_VERSION;
 
     protected $hooks = [
-        'core_boot' => 'core_boot_hook'
+        'core_boot' => 'init'
     ];
     
     /**
@@ -67,26 +67,88 @@ class Extension extends BaseExtension
         return ee()->output->show_user_error('submission', $error);
     }
 
+    public function core_boot_hook()
+    {
+        $this->init();
+    }
+
     /**
      *  Kick off login process using friendly URL
      */
     public function init()
     {        
-        echo "<pre>".__FILE__.'<br>'.__METHOD__.' : '.__LINE__."<br><br>"; var_dump( 'init' ); exit;
-        
         if (ee()->uri->uri_string == 'lastpass_login') {
             $this->processLogin();
         }
     }
 
+
+    /**
+     * Log member in using EE login process (copied from mod.member_auth.php and Auth.php)
+     * 
+     * @param string $email
+     * @return void
+     */
+    private function login($member)
+    {
+    
+        ee()->load->library('auth');
+        ee()->lang->loadfile('login');
+
+        $incoming = new \Auth_result($member->row());
+        $incoming->start_session();
+
+        // $login_state = random_string('md5');
+        // ee()->db->update(
+        //     'sessions',
+        //     array('login_state' => $login_state),
+        //     array('session_id' => ee()->session->userdata('session_id'))
+        // );
+
+        // Build success message
+        $site_name = (ee()->config->item('site_name') == '') ? lang('back') : stripslashes(ee()->config->item('site_name'));
+
+        $return = reduce_double_slashes(ee()->functions->form_backtrack());
+
+        // Build success message
+        $data = array(
+            'title'     => lang('mbr_login'),
+            'heading'   => lang('thank_you'),
+            'content'   => lang('mbr_you_are_logged_in'),
+            'redirect'  => $return,
+            'link'      => array($return, $site_name)
+        );
+
+        ee()->output->show_message($data);
+        exit;
+    
+    }
+
+    /**
+     * create a new member using email
+     * 
+     * @param string $email
+     * @return void
+     */
+    protected function createMember($email)
+    {
+
+    }
+
     /**
      * Lastpass user login handler
+     *
+     * @return void
      */
     protected function processLogin()
     {
 
-        $site_id = ee()->config->item('site_id');
-        $config = ee()->db->get_where('lastpass_config', array('site_id' => $site_id));
+        if (ee()->session->userdata('member_id') !== 0) {
+            return ee()->functions->redirect(ee()->functions->fetch_site_index());
+        }
+
+        $config = ee()->db->get_where('lastpass_config', 
+            array('site_id' => ee()->config->item('site_id')));
 
         if ($config->num_rows() != 1) {
             die('error');
@@ -95,58 +157,24 @@ class Extension extends BaseExtension
         $settings = $config->row_array();
 
         if (empty($_POST["SAMLResponse"])) {
+            
             lp_AuthnRequest($settings);
+
         } else {
             
             $email = lp_saml_auth($settings, $_POST["SAMLResponse"]);
 
-            echo "<pre>".__FILE__.'<br>'.__METHOD__.' : '.__LINE__."<br><br>"; var_dump( $_POST, $email ); exit;
-            ;
+            $member = ee()->db->get_where('members', array('email' => $email));
 
-            $username = preg_replace("/@.*/", "", $email);
-
-            if (empty($username)) {
-                watchdog('lastpass_login', 'LastPass SAML: SAMLReponse check failed -- is your certificate correct?');
-                drupal_set_message('Login failed.', 'error');
-                drupal_goto('/');
+            if ($member->num_rows() != 1) {
+                // can we make the member?
+                if (false) {
+                    $this->createMember();
+                }
             }
 
-            echo "<pre>".__FILE__.'<br>'.__METHOD__.' : '.__LINE__."<br><br>"; var_dump( $email ); exit;
-            
-            // Get User from DB
+            return $this->login($member);
 
-            if (!$user && variable_get('lastpass_create_user') === 1) {
-                // create account
-                $user = user_save('', array(
-                    'name' => $username,
-                    'mail' => $email,
-                    'pass' => user_password(16),
-                    'status' => 1,
-                    'init' => $email,
-                    'roles' => variable_set('lastpass_user_roles')
-                ));
-            }
-
-            if (!$user) {
-                watchdog('lastpass_login', 'Not able to get or create new user - ' . $email);
-                drupal_set_message('Login failed.', 'error');
-                drupal_goto('/');
-            }
-
-            watchdog('user', 'Session opened for %name.', array('%name' => $user->name));
-            watchdog('cmsship', 'User %name logged in via CMSShip with IP of %ip.', array('%name' => $user->name, '%ip' => ip_address()));
-            // Update the user table timestamp noting user has logged in.
-            // This is also used to invalidate one-time login links.
-            $user->login = REQUEST_TIME;
-            db_update('users')
-            ->fields(array('login' => $user->login))
-            ->condition('uid', $user->uid)
-            ->execute();
-
-            // Regenerate the session ID to prevent against session fixation attacks.
-            // This is called before hook_user in case one of those functions fails
-            // or incorrectly does a redirect which would leave the old session in place.
-            
         }
         
     }

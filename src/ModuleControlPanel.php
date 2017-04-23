@@ -45,9 +45,11 @@ class ModuleControlPanel extends BaseModuleControlPanel
 
 
         $settings = [
-            'login' => '',
-            'logout' => '',
-            'cert' => ''
+            'login'     => '',
+            'logout'    => '',
+            'cert'      => '',
+            'url'       => '',
+            'redirect'  => '',
         ];
 
         if ($config->num_rows() == 1) {
@@ -97,7 +99,27 @@ class ModuleControlPanel extends BaseModuleControlPanel
                         ],
                     // 'attrs' => ['readonly' => 'readyonly'],
                     ]
-                ]
+                ],
+                [
+                    'title' => 'EE Lastpass Login URL',
+                    'fields' => [
+                        'lp_process' => [
+                            'type' => 'text',
+                            'value' => $settings['url'],
+                            'required' => TRUE
+                        ]
+                    ]
+                ],
+                [
+                    'title' => 'EE Redirect after Login',
+                    'fields' => [
+                        'lp_redirect' => [
+                            'type' => 'text',
+                            'value' => $settings['redirect'],
+                            'required' => TRUE
+                        ]
+                    ]
+                ],
             ]
         ];
 
@@ -117,7 +139,9 @@ class ModuleControlPanel extends BaseModuleControlPanel
         $rules = array(
           'lp_login' => 'required|minLength[5]',
           'lp_logout' => 'required|minLength[5]',
-          'lp_saml_cert' => 'required|minLength[500]'
+          'lp_saml_cert' => 'required|minLength[500]',
+          'lp_process' => 'required|minLength[5]',
+          'lp_redirect' => 'required|minLength[5]',
         );
 
         $result = ee('Validation')->make($rules)->validate($_POST);
@@ -131,6 +155,8 @@ class ModuleControlPanel extends BaseModuleControlPanel
                 'login' => trim(ee()->input->post('lp_login')),
                 'logout' => trim(ee()->input->post('lp_logout')),
                 'cert' => trim(ee()->input->post('lp_saml_cert')),
+                'url' => trim(ee()->input->post('lp_process')),
+                'redirect' => trim(ee()->input->post('lp_redirect')),
             ];
 
             if($config->num_rows() == 0) {
