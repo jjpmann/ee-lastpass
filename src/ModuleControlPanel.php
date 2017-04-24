@@ -53,7 +53,7 @@ class ModuleControlPanel extends BaseModuleControlPanel
         ];
 
         if ($config->num_rows() == 1) {
-            $settings = $config->row_array();
+            $settings = array_merge($settings, $config->row_array());
         }
         
         $vars['sections'] =[

@@ -70,6 +70,16 @@ class ModuleUpdate extends BaseModuleUpdate
                 'type' => 'varchar',
                 'constraint' => '2048',
                 'null' => FALSE
+            ],
+            'url' => [
+                'type' => 'varchar',
+                'constraint' => '250',
+                'null' => FALSE
+            ],
+            'redirect' => [
+                'type' => 'varchar',
+                'constraint' => '250',
+                'null' => FALSE
             ]
         ];
 
